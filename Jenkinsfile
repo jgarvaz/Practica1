@@ -5,7 +5,7 @@ pipeline {
         stage('Saludo') {
             steps {
                 sh '''
-                    eo "Hola Mundo desde Jenkins Pipeline"
+                    echo "Hola Mundo desde Jenkins Pipeline"
                 '''
             }
         }
