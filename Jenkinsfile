@@ -29,5 +29,12 @@ pipeline {
             }
         }
 
+        stage('Deploy') {
+            steps {
+                echo "Desplegando..."
+                sh 'cp build.txt /var/www/app/'
+            }
+        }
+
     }
 }
