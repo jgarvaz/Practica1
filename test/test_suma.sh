@@ -1,6 +1,6 @@
 #!/bin/bash
 
-result=$((2+10))
+result=$((2+8))
 
 if [ "$result" -eq 10 ]; then
     echo "El test ha sido exitoso"
