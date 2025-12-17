@@ -23,7 +23,7 @@ pipeline {
             }
         }
 
-        stage('Archivo') {
+        stage('Archive') {
             steps {
                 archiveArtifacts artifacts: 'build.txt', fingerprint: true
             }
