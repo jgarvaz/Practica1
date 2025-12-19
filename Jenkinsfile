@@ -1,6 +1,8 @@
 pipeline {
-    agent {
-        docker { image 'node:24' } // Contiene npm
+    agent any
+
+    tools {
+        nodejs 'node24' 
     }
 
     stages {
@@ -24,3 +26,4 @@ pipeline {
         }
     }
 }
+
