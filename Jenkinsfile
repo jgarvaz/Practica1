@@ -15,9 +15,8 @@ pipeline {
         stage('Setup Node') {
             steps {
                 sh '''
-                # Carga nvm
-                [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-                # Instala Node 24 si no está
+                export NVM_DIR="$HOME/.nvm"
+                [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
                 nvm install 24
                 nvm use 24
                 node -v
@@ -29,7 +28,8 @@ pipeline {
         stage('Install dependencies') {
             steps {
                 sh '''
-                [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                export NVM_DIR="$HOME/.nvm"
+                [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
                 nvm use 24
                 npm install
                 '''
@@ -39,7 +39,8 @@ pipeline {
         stage('Build') {
             steps {
                 sh '''
-                [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                export NVM_DIR="$HOME/.nvm"
+                [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
                 nvm use 24
                 npm run build
                 '''
