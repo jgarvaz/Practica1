@@ -1,41 +1,32 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:24'
-           
-        }
-    }
+    agent any
 
     stages {
-
-        stage('Install') {
+        stage('Checkout') {
             steps {
-                echo "Instalando dependencias..."
+                checkout scm
+            }
+        }
+
+        stage('Install dependencies') {
+            steps {
                 sh 'npm install'
             }
         }
 
         stage('Build') {
             steps {
-                echo "Construyendo la aplicación..."
                 sh 'npm run build'
-            }
-        }
-
-        stage('Archive') {
-            steps {
-                echo "Archivando el build..."
-                archiveArtifacts artifacts: 'build/**', fingerprint: true
             }
         }
     }
 
     post {
         success {
-            echo "✅ Build completado correctamente"
+            archiveArtifacts artifacts: 'build/**', fingerprint: true
         }
         failure {
-            echo "❌ Build fallido"
+            echo '❌ El build ha fallado'
         }
     }
 }
