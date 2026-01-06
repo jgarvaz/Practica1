@@ -1,15 +1,12 @@
 pipeline {
     agent any
 
-    tools {
-        // Usa el NodeJS tool que hayas configurado en Jenkins
-        nodejs "NodeJS24"
-    }
-
     stages {
         stage('Install') {
             steps {
                 echo 'Instalando dependencias...'
+                sh 'node -v'
+                sh 'npm -v'
                 sh 'npm install'
             }
         }
