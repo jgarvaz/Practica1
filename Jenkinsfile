@@ -1,30 +1,29 @@
 pipeline {
     agent any
 
-    environment {
-        NODE_ENV = 'production'
-    }
-
     stages {
         stage('Install') {
             steps {
-                echo 'Instalando dependencias...'
-                sh 'node -v'
-                sh 'npm -v'
-                sh 'npm install'
+                sh '''
+                  export NVM_DIR="$HOME/.nvm"
+                  [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+                  nvm install 24
+                  nvm use 24
+                  node -v
+                  npm -v
+                  npm install
+                '''
             }
         }
 
         stage('Build') {
             steps {
-                echo 'Construyendo la aplicación...'
                 sh 'npm run build'
             }
         }
 
         stage('Archive') {
             steps {
-                echo 'Archivando artefactos...'
                 archiveArtifacts artifacts: 'build/**', fingerprint: true
             }
         }
