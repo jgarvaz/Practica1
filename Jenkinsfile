@@ -2,8 +2,13 @@ pipeline {
     agent any
 
     stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
 
-        stage('Install Dependencies') {
+        stage('Install dependencies') {
             steps {
                 sh 'npm install'
             }
@@ -14,11 +19,14 @@ pipeline {
                 sh 'npm run build'
             }
         }
+    }
 
-        stage('Archive Build') {
-            steps {
-                archiveArtifacts artifacts: 'build/**'
-            }
+    post {
+        success {
+            archiveArtifacts artifacts: 'build/**', fingerprint: true
+        }
+        failure {
+            echo '❌ El build ha fallado'
         }
     }
 }
