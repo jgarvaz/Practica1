@@ -1,37 +1,58 @@
 pipeline {
     agent any
 
+    environment {
+        NVM_DIR = "$HOME/.nvm"
+    }
+
     stages {
         stage('Checkout') {
             steps {
-                // Obtiene el código desde tu repositorio
                 checkout scm
+            }
+        }
+
+        stage('Setup Node') {
+            steps {
+                sh '''
+                # Carga nvm
+                [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                # Instala Node 24 si no está
+                nvm install 24
+                nvm use 24
+                node -v
+                npm -v
+                '''
             }
         }
 
         stage('Install dependencies') {
             steps {
-                // Instala dependencias de npm
-                sh 'npm install'
+                sh '''
+                [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                nvm use 24
+                npm install
+                '''
             }
         }
 
         stage('Build') {
             steps {
-                // Ejecuta el build de React
-                sh 'npm run build'
+                sh '''
+                [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                nvm use 24
+                npm run build
+                '''
             }
         }
     }
 
     post {
         success {
-            // Archiva la carpeta build generada como artefacto
             archiveArtifacts artifacts: 'build/**', fingerprint: true
             echo '✅ Build completado correctamente'
         }
         failure {
-            // Mensaje de fallo
             echo '❌ El build ha fallado'
         }
     }
