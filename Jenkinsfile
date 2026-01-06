@@ -2,32 +2,31 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
+        stage('Install') {
             steps {
-                checkout scm
-            }
-        }
-
-        stage('Install dependencies') {
-            steps {
-                sh 'npm install'
+                // Ejecutar npm install dentro de un contenedor node:24
+                sh 'docker run --rm -v $PWD:/app -w /app node:24 npm install'
             }
         }
 
         stage('Build') {
             steps {
-                sh 'npm run build'
+                // Ejecutar npm run build dentro de un contenedor node:24
+                sh 'docker run --rm -v $PWD:/app -w /app node:24 npm run build'
+            }
+        }
+
+        stage('Archive') {
+            steps {
+                // Guardar el build generado
+                archiveArtifacts artifacts: 'build/**', fingerprint: true
             }
         }
     }
 
     post {
-        success {
-            archiveArtifacts artifacts: 'build/**', fingerprint: true
-        }
-        failure {
-            echo '❌ El build ha fallado'
-        }
+        success { echo "✅ Build completado correctamente" }
+        failure { echo "❌ El build ha fallado" }
     }
 }
 
