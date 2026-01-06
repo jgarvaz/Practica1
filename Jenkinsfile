@@ -1,37 +1,37 @@
 pipeline {
     agent any
 
+    tools {
+        // Usa el NodeJS tool que hayas configurado en Jenkins
+        nodejs "NodeJS24"
+    }
+
     stages {
         stage('Install') {
             steps {
-                sh '''
-                  export NVM_DIR="$HOME/.nvm"
-                  [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-                  nvm install 24
-                  nvm use 24
-                  node -v
-                  npm -v
-                  npm install
-                '''
+                echo 'Instalando dependencias...'
+                sh 'npm install'
             }
         }
 
         stage('Build') {
             steps {
+                echo 'Compilando el proyecto...'
                 sh 'npm run build'
             }
         }
 
         stage('Archive') {
             steps {
-                archiveArtifacts artifacts: 'build/**', fingerprint: true
+                echo 'Archivando artefactos...'
+                archiveArtifacts artifacts: '**/dist/**', allowEmptyArchive: true
             }
         }
     }
 
     post {
         success {
-            echo '✅ Build completado con éxito'
+            echo '✅ Build completado correctamente'
         }
         failure {
             echo '❌ Build fallido'
