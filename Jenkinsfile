@@ -1,32 +1,42 @@
 pipeline {
     agent any
 
+    environment {
+        NODE_ENV = 'production'
+    }
+
     stages {
         stage('Install') {
             steps {
-                // Ejecutar npm install dentro de un contenedor node:24
-                sh 'docker run --rm -v $PWD:/app -w /app node:24 npm install'
+                echo 'Instalando dependencias...'
+                sh 'node -v'
+                sh 'npm -v'
+                sh 'npm install'
             }
         }
 
         stage('Build') {
             steps {
-                // Ejecutar npm run build dentro de un contenedor node:24
-                sh 'docker run --rm -v $PWD:/app -w /app node:24 npm run build'
+                echo 'Construyendo la aplicación...'
+                sh 'npm run build'
             }
         }
 
         stage('Archive') {
             steps {
-                // Guardar el build generado
+                echo 'Archivando artefactos...'
                 archiveArtifacts artifacts: 'build/**', fingerprint: true
             }
         }
     }
 
     post {
-        success { echo "✅ Build completado correctamente" }
-        failure { echo "❌ El build ha fallado" }
+        success {
+            echo '✅ Build completado con éxito'
+        }
+        failure {
+            echo '❌ Build fallido'
+        }
     }
 }
 
