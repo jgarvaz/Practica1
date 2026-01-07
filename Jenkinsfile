@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs 'Node 24'
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -29,7 +33,7 @@ pipeline {
 
     post {
         success {
-            archiveArtifacts artifacts: 'build/**', fingerprint: true
+            echo '✅ Pipeline completado correctamente'
         }
         failure {
             echo '❌ El pipeline ha fallado (tests o build)'
