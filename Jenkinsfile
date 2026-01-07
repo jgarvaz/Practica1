@@ -6,6 +6,7 @@ pipeline {
     }
 
     stages {
+
         stage('Checkout') {
             steps {
                 checkout scm
@@ -29,14 +30,23 @@ pipeline {
                 sh 'npm run build'
             }
         }
+
+        stage('Deploy') {
+            steps {
+                sh '''
+                  rm -rf /var/www/app/*
+                  cp -r build/* /var/www/app/
+                '''
+            }
+        }
     }
 
     post {
         success {
-            echo '✅ Pipeline completado correctamente'
+            echo '✅ Aplicación desplegada correctamente'
         }
         failure {
-            echo '❌ El pipeline ha fallado (tests o build)'
+            echo '❌ Pipeline fallido (tests, build o deploy)'
         }
     }
 }
