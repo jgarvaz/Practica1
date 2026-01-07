@@ -1,45 +1,38 @@
 pipeline {
     agent any
 
-    // Esta sección obliga a Jenkins a usar la versión moderna de Node
-    tools {
-        nodejs "Node 24" 
-    }
-	
     stages {
-        stage('Install') {
+        stage('Checkout') {
             steps {
-                echo 'Instalando dependencias...'
-                // Ahora estos comandos mostrarán la v24 y npm 11
-                sh 'node -v'
-                sh 'npm -v'
+                checkout scm
+            }
+        }
+
+        stage('Install dependencies') {
+            steps {
                 sh 'npm install'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'npm test -- --watchAll=false'
             }
         }
 
         stage('Build') {
             steps {
-                echo 'Compilando el proyecto...'
                 sh 'npm run build'
-            }
-        }
-
-        stage('Archive') {
-            steps {
-                echo 'Archivando artefactos...'
-                // Nota: React por defecto genera la carpeta 'build', no 'dist'
-                // He ajustado esto para que coincida con lo que suele generar npm run build
-                archiveArtifacts artifacts: 'build/**', allowEmptyArchive: true
             }
         }
     }
 
     post {
         success {
-            echo '✅ Build completado correctamente'
+            archiveArtifacts artifacts: 'build/**', fingerprint: true
         }
         failure {
-            echo '❌ Build fallido'
+            echo '❌ El pipeline ha fallado (tests o build)'
         }
     }
 }

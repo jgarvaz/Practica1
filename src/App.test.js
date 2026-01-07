@@ -1,8 +1,18 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+test('el contador se incrementa al pulsar el botón', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+
+  // Valor inicial
+  const contador = screen.getByTestId('contador');
+  expect(contador).toHaveTextContent('Contador: 0');
+
+  // Click en el botón
+  const boton = screen.getByText(/incrementar/i);
+  fireEvent.click(boton);
+
+  // Valor esperado tras el click
+  expect(contador).toHaveTextContent('Contador: 1');
 });
+
